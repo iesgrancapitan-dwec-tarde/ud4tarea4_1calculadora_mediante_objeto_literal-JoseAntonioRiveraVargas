@@ -1,19 +1,21 @@
-// Creamos un div y le agregamos el id --> Calculadora 
-const calculadora = document.createElement('div');
-calculadora.setAttribute('id', 'calculadora');
+// Creamos un div y le agregamos el id --> contenedor 
+const contenedor = document.createElement('div');
+contenedor.setAttribute('id', 'contenedor');
 
 //  Le agregamos ancho, margen, fonde de color, padding y borde redondeado
-calculadora.style.width = '400px';
-calculadora.style.margin = 'auto';
-calculadora.style.backgroundColor = '#eee';
-calculadora.style.padding = '20px';
-calculadora.style.borderRadius = '10px';
+contenedor.style.width = '400px';
+contenedor.style.margin = 'auto';
+contenedor.style.backgroundColor = '#eee';
+contenedor.style.padding = '20px';
+contenedor.style.borderRadius = '10px';
 
 // Creamos la barra de resultado de tipo text con el id resultado y por defecto esta deshabilitado
 const resultado = document.createElement('input');
 resultado.setAttribute('type', 'text');
 resultado.setAttribute('id', 'resultado');
 resultado.setAttribute('disabled', 'true');
+resultado.value = 0;
+
 
 // A la barra de resultado le agregamos estilo css
 resultado.style.width = '100%';
@@ -22,13 +24,13 @@ resultado.style.fontSize = '20px';
 resultado.style.textAlign = 'right';
 resultado.style.marginBottom = '20px';
 
-// agregramos a la calculadora la barra de resultado
-calculadora.appendChild(resultado);
+// agregramos a la contenedor la barra de resultado
+contenedor.appendChild(resultado);
 
-// Creamos un array con todos los valores de la calculadora
-const buttons = ['CE', '←', '%', '+', '7', '8', '9', '-', '4', '5', '6', 'X', '1', '2', '3', '÷', '0', '±', ',', '='];
+// Creamos un array con todos los valores de la contenedor
+const buttons = ['CE', '←', '%', '+', '7', '8', '9', '-', '4', '5', '6', '*', '1', '2', '3', '/', '0', '±', ',', '='];
 
-// recorremos el array creando un boton por cada elemento con su estilo correspondiente y le agregamos a la calculadora 
+// recorremos el array creando un boton por cada elemento con su estilo correspondiente y le agregamos a la contenedor 
 buttons.forEach((value) => {
   const button = document.createElement('button');
   button.innerText = value;
@@ -36,37 +38,61 @@ buttons.forEach((value) => {
   button.style.width = '20%';
   button.style.height = '50px';
   button.style.fontSize = '20px';
-  calculadora.appendChild(button);
+  contenedor.appendChild(button);
 
 
-  button.addEventListener("click", function (e) {
-    if (!isNaN(value)) {
-      resultado.value == 0 ? resultado.value = value : resultado.value += value;
-    }
-    if(value == 'CE'){
-      resultado.value = 0;
-    }
-    if (value == '←') {
-      resultado.value = parseInt(resultado.value.toString().slice(0, -1));
-    };
-    if (value == ',') {
-      resultado.value += ","
-    };
-
-
+  button.addEventListener('click', () => {
+    calculadora(button);
   });
 });
 
-// Agregamos la calculadora al body del html
-document.body.appendChild(calculadora);
+// Agregamos la contenedor al body del html
+document.body.appendChild(contenedor);
 
-// Tarea 4.1. Calculadora mediante objeto literal pendiente
-// Inicialmente en el display aparece el cero sin decimal.
-resultado.value = 0;
+function calculadora(button) {
+  switch (button.innerText) {
+    case 'CE':
+      borrarTodo();
+      break;
 
-// En el display sólo puede aparecer un punto decimal.
-function formatearResultado(num) {
-  resultado.value = parseFloat(num).toFixed(1);
+    case '=':
+      calcular();
+      break;
+
+    case '←':
+      borrar();
+      break;
+
+    case '%':
+      porcentaje();
+      break;
+
+    default:
+      actualizar(button);
+      break;
+  }
+};
+
+function calcular() {
+  resultado.value = eval(resultado.value);
 }
 
-// 
+function actualizar(button) {
+  if (resultado.value == 0) {
+    resultado.value = '';
+  }
+  resultado.value += button.innerText;
+}
+
+function borrarTodo() {
+  resultado.value = 0;
+}
+
+function borrar() {
+  resultado.value.toString().length === 1 ?  resultado.value=0 : resultado.value = resultado.value.toString().slice(0, -1);  
+}
+
+function porcentaje(){
+  !isNaN(resultado.value) ? resultado.value /= 100 : resultado.value = 0;
+
+}
