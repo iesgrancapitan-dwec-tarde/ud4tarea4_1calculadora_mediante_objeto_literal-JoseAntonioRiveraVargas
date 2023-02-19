@@ -73,8 +73,10 @@ function calculadora(button) {
   }
 };
 
+
+
 function calcular() {
-  resultado.value = eval(resultado.value);
+  resultado.value = eval(resultado.value); //.toLocaleString('de-DE')
 }
 
 function actualizar(button) {
